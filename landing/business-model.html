@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Koomon Business Model — COSS strategy, three-tier pricing, MRR projections, and go-to-market sequence." />
+  <title>Business Model — Koomon</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── Navigation ────────────────────────────────────────────────── -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav__inner container">
+      <a class="nav__logo" href="index.html">
+        <svg class="nav__logo-icon" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="16" cy="16" r="14" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+          <path d="M10 20 L16 10 L22 20" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
+          <circle cx="16" cy="20" r="2.5" fill="var(--accent)"/>
+        </svg>
+        <span>Koomon</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a href="index.html#features">Features</a></li>
+        <li><a href="index.html#how-it-works">How It Works</a></li>
+        <li><a href="index.html#pricing">Pricing</a></li>
+        <li><a href="https://github.com/koomon/koomon" class="nav__link--gh" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20" fill="currentColor">
+            <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+        </a></li>
+      </ul>
+      <a class="btn btn--accent btn--sm" href="index.html#pricing">Get Started Free</a>
+    </div>
+  </nav>
+
+  <!-- ─── Content ───────────────────────────────────────────────────── -->
+  <main class="doc-page">
+    <a class="doc-nav-back" href="index.html">Back to Home</a>
+    <p class="doc-page__eyebrow">Docs</p>
+    <h1 class="doc-page__title">Business Model &amp; Pricing</h1>
+
+    <div class="doc-body">
+
+      <p>Koomon follows the <strong>Value-Value-Premium</strong> tiered model: each successive tier delivers compounding value rather than withholding features from lower tiers. The Community Core is complete and useful on its own. Paid tiers reduce operational burden and add intelligence features — they do not paywall core functionality.</p>
+
+      <h2>1. COSS Strategy Overview</h2>
+      <table>
+        <thead><tr><th>Tier</th><th>License</th><th>What It Is</th></tr></thead>
+        <tbody>
+          <tr><td>Community Core</td><td>AGPLv3 open source</td><td>Full chat + CRDT engine + self-hosted server + all 5 native platforms</td></tr>
+          <tr><td>Koomon Managed Cloud</td><td>Proprietary SaaS</td><td>Managed infra + backups + 99.9% SLA + support</td></tr>
+          <tr><td>SwarmState AI Enterprise</td><td>Proprietary add-on</td><td>On-device vector RAG + compliance audit logs + SSO/SCIM</td></tr>
+        </tbody>
+      </table>
+
+      <h2>2. The Three Tiers</h2>
+
+      <h3>2.1 Community Core (AGPLv3)</h3>
+      <p><strong>Price:</strong> Free forever — <strong>License:</strong> GNU Affero General Public License v3.0</p>
+      <p>Includes:</p>
+      <ul>
+        <li>Complete multi-platform chat (macOS, Windows, Linux, iOS, Android)</li>
+        <li>Y-CRDT engine with offline-first conflict resolution</li>
+        <li>WebTransport relay server (self-hosted)</li>
+        <li>SQLite local storage with SQLCipher encryption</li>
+        <li>APNs and FCM mobile push (bring your own certificates)</li>
+        <li>Docker Compose single-command server deployment</li>
+        <li>No user limits, no message limits, no storage limits</li>
+      </ul>
+      <p>Any organization that modifies the Community Core and deploys it as a network service must publish those modifications under AGPLv3. This creates a natural commercial upgrade path for organizations that cannot comply.</p>
+
+      <h3>2.2 Koomon Managed Cloud (SaaS)</h3>
+      <p><strong>Delivery:</strong> Hosted by Koomon Inc. on managed infrastructure.</p>
+      <table>
+        <thead><tr><th>Feature</th><th>Community Core</th><th>Managed Cloud</th></tr></thead>
+        <tbody>
+          <tr><td>Infrastructure management</td><td>You operate it</td><td>We operate it</td></tr>
+          <tr><td>TLS certificate renewal</td><td>Manual</td><td>Automatic</td></tr>
+          <tr><td>Database backups</td><td>Manual</td><td>Daily automated + point-in-time recovery</td></tr>
+          <tr><td>TURN server for NAT traversal</td><td>DIY</td><td>Included</td></tr>
+          <tr><td>Uptime SLA</td><td>N/A</td><td>99.9% monthly</td></tr>
+          <tr><td>Email support</td><td>GitHub issues</td><td>48-hour business response</td></tr>
+          <tr><td>Admin dashboard</td><td>CLI only</td><td>Web UI</td></tr>
+          <tr><td>Workspace audit log</td><td>Not included</td><td>90-day included</td></tr>
+        </tbody>
+      </table>
+
+      <h3>2.3 SwarmState AI Enterprise (Proprietary Add-on)</h3>
+      <p><strong>License:</strong> Proprietary closed source — <strong>Delivery:</strong> Bundled with Managed Cloud Enterprise tier or as on-premises binary.</p>
+      <p>SwarmState AI indexes the local SQLite message corpus into an on-device vector store using a quantized embedding model. All inference runs locally via the <code>candle</code> Rust ML framework — no API calls to OpenAI, Anthropic, or any cloud model provider.</p>
+      <table>
+        <thead><tr><th>Feature</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>On-device vector indexing</td><td>Embeddings computed and stored locally</td></tr>
+          <tr><td>Semantic workspace search</td><td>Natural-language queries across all channels</td></tr>
+          <tr><td>Privacy-compliant RAG</td><td>No message content ever transmitted to external AI services</td></tr>
+          <tr><td>Role-aware retrieval</td><td>Search results respect channel membership permissions</td></tr>
+          <tr><td>SSO / SCIM provisioning</td><td>Okta, Azure AD, Google Workspace identity federation</td></tr>
+          <tr><td>Compliance audit log</td><td>Immutable 1-year append-only log of workspace events</td></tr>
+          <tr><td>Dedicated SLA</td><td>4-hour critical response, named account manager</td></tr>
+        </tbody>
+      </table>
+
+      <h2>3. Pricing Matrix</h2>
+
+      <h3>Koomon Managed Cloud</h3>
+      <table>
+        <thead><tr><th>Plan</th><th>Users</th><th>Price</th><th>Billing</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Starter</strong></td><td>Up to 10</td><td>$29 / month flat</td><td>Monthly or annual (–20%)</td></tr>
+          <tr><td><strong>Growth</strong></td><td>Up to 50</td><td>$8 / user / month</td><td>Monthly or annual (–20%)</td></tr>
+          <tr><td><strong>Business</strong></td><td>Up to 250</td><td>$6 / user / month</td><td>Monthly or annual (–20%)</td></tr>
+          <tr><td><strong>Scale</strong></td><td>250+</td><td>Custom</td><td>Annual contract</td></tr>
+        </tbody>
+      </table>
+
+      <h3>SwarmState AI Enterprise Add-on</h3>
+      <table>
+        <thead><tr><th>Plan</th><th>Users</th><th>Price</th><th>Billing</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Enterprise</strong></td><td>Up to 500</td><td>$12 / user / month</td><td>Annual only</td></tr>
+          <tr><td><strong>Enterprise+</strong></td><td>500+</td><td>Custom</td><td>Annual contract</td></tr>
+        </tbody>
+      </table>
+      <blockquote>
+        <p>Enterprise add-on requires an active Managed Cloud Business or Scale subscription. Annual pricing example: 25-person Growth team → $8 × 25 × 12 × 0.80 = <strong>$1,920 / year</strong> vs $2,400 billed monthly.</p>
+      </blockquote>
+
+      <h2>4. MRR Projection Model</h2>
+      <p>The table below models monthly recurring revenue across realistic user growth scenarios using standard COSS conversion benchmarks.</p>
+      <h3>Assumptions</h3>
+      <table>
+        <thead><tr><th>Variable</th><th>Value</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td>OSS → Managed Cloud conversion</td><td>3%</td><td>Industry benchmark for developer-led COSS</td></tr>
+          <tr><td>Managed Cloud → Enterprise conversion</td><td>15%</td><td>Mid-market upsell benchmark</td></tr>
+          <tr><td>Average Managed Cloud users per account</td><td>22</td><td>Blended Growth/Business plan mix</td></tr>
+          <tr><td>Average Managed Cloud ARPU</td><td>$7.00 / user / month</td><td>Blended Growth + Business pricing</td></tr>
+          <tr><td>Average Enterprise users per account</td><td>120</td><td>Mid-market org size</td></tr>
+          <tr><td>Enterprise ARPU (base + add-on)</td><td>$18.00 / user / month</td><td>$6 Business + $12 SwarmState</td></tr>
+        </tbody>
+      </table>
+
+      <h3>MRR Projections by OSS User Base</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>OSS Users</th>
+            <th>Cloud Accts</th>
+            <th>Cloud MRR</th>
+            <th>Enterprise Accts</th>
+            <th>Enterprise MRR</th>
+            <th>Total MRR</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1,000</td><td>30</td><td>$4,620</td><td>5</td><td>$10,800</td><td><strong>$15,420</strong></td></tr>
+          <tr><td>5,000</td><td>150</td><td>$23,100</td><td>23</td><td>$49,680</td><td><strong>$72,780</strong></td></tr>
+          <tr><td>10,000</td><td>300</td><td>$46,200</td><td>45</td><td>$97,200</td><td><strong>$143,400</strong></td></tr>
+          <tr><td>25,000</td><td>750</td><td>$115,500</td><td>113</td><td>$243,360</td><td><strong>$358,860</strong></td></tr>
+          <tr><td>50,000</td><td>1,500</td><td>$231,000</td><td>225</td><td>$486,000</td><td><strong>$717,000</strong></td></tr>
+          <tr><td>100,000</td><td>3,000</td><td>$462,000</td><td>450</td><td>$972,000</td><td><strong>$1,434,000</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h2>5. Conversion Funnel</h2>
+      <p>Primary conversion triggers:</p>
+      <table>
+        <thead><tr><th>Friction Point</th><th>Conversion Lever</th></tr></thead>
+        <tbody>
+          <tr><td>"I don't want to manage Docker"</td><td>One-click Managed Cloud onboarding</td></tr>
+          <tr><td>"We need backups and an SLA for our board"</td><td>Business plan with 99.9% SLA</td></tr>
+          <tr><td>"We can't use cloud AI — we're regulated"</td><td>SwarmState on-device RAG pitch</td></tr>
+          <tr><td>"We're 200 people and need SSO"</td><td>Enterprise SSO/SCIM gate</td></tr>
+        </tbody>
+      </table>
+
+      <h2>6. Unit Economics</h2>
+      <table>
+        <thead><tr><th>Metric</th><th>Target</th></tr></thead>
+        <tbody>
+          <tr><td>Gross margin (Managed Cloud)</td><td>≥ 75% (infra cost ~25% of ARPU at scale)</td></tr>
+          <tr><td>Gross margin (Enterprise)</td><td>≥ 85% (software distribution, minimal infra)</td></tr>
+          <tr><td>Customer Acquisition Cost (CAC)</td><td>&lt; 3× monthly ARPU (developer-led, low-touch)</td></tr>
+          <tr><td>Payback period</td><td>&lt; 6 months for Growth, &lt; 3 months for Enterprise</td></tr>
+          <tr><td>Net Revenue Retention (NRR) target</td><td>≥ 110% (seat expansion as teams grow)</td></tr>
+        </tbody>
+      </table>
+
+      <h2>7. Go-To-Market Sequence</h2>
+      <table>
+        <thead><tr><th>Phase</th><th>Action</th><th>Goal</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Pre-launch</strong></td><td>Build in public on GitHub, post architecture content</td><td>OSS developer awareness</td></tr>
+          <tr><td><strong>Phase 4 (Weeks 21–24)</strong></td><td>Public GitHub repo + Hacker News / Reddit launch</td><td>First 1,000 OSS users</td></tr>
+          <tr><td><strong>Month 3–6</strong></td><td>Launch Managed Cloud waitlist and Starter plan</td><td>First 30 paying accounts</td></tr>
+          <tr><td><strong>Month 6–12</strong></td><td>Content SEO targeting "self-hosted Slack alternative"</td><td>5,000 OSS users, 150 cloud accounts</td></tr>
+          <tr><td><strong>Year 2</strong></td><td>Enterprise outbound for legal/finance/healthcare verticals</td><td>First SwarmState AI contracts</td></tr>
+          <tr><td><strong>Year 2–3</strong></td><td>Partner with MSPs and system integrators</td><td>Channel revenue stream</td></tr>
+        </tbody>
+      </table>
+
+    </div>
+  </main>
+
+  <!-- ─── Footer ────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <a class="nav__logo" href="index.html">
+          <svg class="nav__logo-icon" viewBox="0 0 32 32" aria-hidden="true">
+            <circle cx="16" cy="16" r="14" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+            <path d="M10 20 L16 10 L22 20" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
+            <circle cx="16" cy="20" r="2.5" fill="var(--accent)"/>
+          </svg>
+          <span>Koomon</span>
+        </a>
+        <p>Local-first team messaging.<br/>Built with Rust. Owned by you.</p>
+      </div>
+      <nav class="footer__links" aria-label="Footer navigation">
+        <div class="footer__col">
+          <h4>Product</h4>
+          <ul role="list">
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#how-it-works">Architecture</a></li>
+            <li><a href="index.html#pricing">Pricing</a></li>
+            <li><a href="roadmap.html">Roadmap</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Resources</h4>
+          <ul role="list">
+            <li><a href="architecture.html">Docs</a></li>
+            <li><a href="https://github.com/koomon/koomon">GitHub</a></li>
+            <li><a href="license.html">License (AGPLv3)</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Company</h4>
+          <ul role="list">
+            <li><a href="business-model.html">Business Model</a></li>
+            <li><a href="mailto:enterprise@koomon.app">Enterprise</a></li>
+            <li><a href="mailto:hello@koomon.app">Contact</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+    <div class="footer__bottom">
+      <div class="container">
+        <p>© 2026 Koomon Inc. Community Core is <a href="license.html">AGPLv3</a>. Enterprise modules are proprietary.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

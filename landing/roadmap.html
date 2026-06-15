@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Koomon Development Roadmap — four-phase execution plan from initial Rust workspace to public open-source launch." />
+  <title>Roadmap — Koomon</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── Navigation ────────────────────────────────────────────────── -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav__inner container">
+      <a class="nav__logo" href="index.html">
+        <svg class="nav__logo-icon" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="16" cy="16" r="14" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+          <path d="M10 20 L16 10 L22 20" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
+          <circle cx="16" cy="20" r="2.5" fill="var(--accent)"/>
+        </svg>
+        <span>Koomon</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a href="index.html#features">Features</a></li>
+        <li><a href="index.html#how-it-works">How It Works</a></li>
+        <li><a href="index.html#pricing">Pricing</a></li>
+        <li><a href="https://github.com/koomon/koomon" class="nav__link--gh" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20" fill="currentColor">
+            <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+        </a></li>
+      </ul>
+      <a class="btn btn--accent btn--sm" href="index.html#pricing">Get Started Free</a>
+    </div>
+  </nav>
+
+  <!-- ─── Content ───────────────────────────────────────────────────── -->
+  <main class="doc-page">
+    <a class="doc-nav-back" href="index.html">Back to Home</a>
+    <p class="doc-page__eyebrow">Docs</p>
+    <h1 class="doc-page__title">Development Roadmap</h1>
+
+    <div class="doc-body">
+
+      <p>This document defines the four-phase MVP execution plan from initial Rust workspace initialization to public open-source launch. Each phase has concrete deliverables, acceptance criteria, and technical milestones.</p>
+
+      <h2>1. Overview Timeline</h2>
+      <table>
+        <thead><tr><th>Phase</th><th>Focus</th><th>Weeks</th><th>Exit Criteria</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Local-First Core</td><td>1–6</td><td>CRDT convergence tests pass on concurrent offline edits</td></tr>
+          <tr><td>2</td><td>Network Transport</td><td>7–12</td><td>Real-time text sync across 3 local nodes via Tauri desktop</td></tr>
+          <tr><td>3</td><td>Native Mobile</td><td>13–20</td><td>Background push wakes app and syncs message on locked screen</td></tr>
+          <tr><td>4</td><td>OSS Launch</td><td>21–24</td><td>Public GitHub repo with passing CI, Docker deploy, and 100+ GitHub stars</td></tr>
+        </tbody>
+      </table>
+
+      <h2>2. Phase 1 — Local-First Core (Weeks 1–6)</h2>
+      <p><strong>Objective:</strong> Establish the Rust workspace foundation. Prove that the Y-CRDT engine and SQLite storage layer correctly handle concurrent offline edits and converge to identical states.</p>
+
+      <h3>Milestones</h3>
+      <table>
+        <thead><tr><th>#</th><th>Milestone</th><th>Target Week</th></tr></thead>
+        <tbody>
+          <tr><td>1.1</td><td>Initialize Cargo workspace with <code>koomon-core</code> library crate</td><td>Week 1</td></tr>
+          <tr><td>1.2</td><td>Integrate <code>yrs</code> — implement <code>Doc</code>, <code>Text</code>, and <code>Update</code> primitives</td><td>Week 2</td></tr>
+          <tr><td>1.3</td><td>Integrate <code>rusqlite</code> (bundled) — implement schema migrations</td><td>Week 3</td></tr>
+          <tr><td>1.4</td><td>Implement <code>MessageStore</code> — append CRDT update blobs, read history</td><td>Week 4</td></tr>
+          <tr><td>1.5</td><td>Implement <code>PendingSync</code> queue — track unacknowledged outbound updates</td><td>Week 5</td></tr>
+          <tr><td>1.6</td><td>Write automated convergence tests — simulate concurrent offline writes</td><td>Week 6</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Acceptance Criteria</h3>
+      <pre><code>GIVEN two clients A and B share a channel document
+AND both clients go offline
+WHEN A appends "Hello" and B appends "World" concurrently
+AND both clients reconnect and exchange CRDT Update vectors
+THEN both A and B MUST converge to the identical document state
+AND the convergence MUST be deterministic regardless of update delivery order
+AND the final state MUST be committed to each client's local SQLite database</code></pre>
+
+      <h3>Key Dependencies</h3>
+      <pre><code>[dependencies]
+yrs = "0.21"
+rusqlite = { version = "0.31", features = ["bundled"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }</code></pre>
+
+      <h2>3. Phase 2 — Network Transport (Weeks 7–12)</h2>
+      <p><strong>Objective:</strong> Bring the core online. Implement the WebTransport relay server and connect a functional Tauri desktop application to it. Demonstrate real-time text synchronization across multiple local nodes.</p>
+
+      <h3>Milestones</h3>
+      <table>
+        <thead><tr><th>#</th><th>Milestone</th><th>Target Week</th></tr></thead>
+        <tbody>
+          <tr><td>2.1</td><td>Integrate <code>wtransport</code> into <code>koomon-server</code> — accept client QUIC sessions</td><td>Week 7</td></tr>
+          <tr><td>2.2</td><td>Implement channel-based session routing on the server</td><td>Week 8</td></tr>
+          <tr><td>2.3</td><td>Implement WebTransport client in <code>koomon-core</code> — connect, send, receive</td><td>Week 9</td></tr>
+          <tr><td>2.4</td><td>Wire <code>PendingSync</code> queue to transport layer — auto-flush on reconnect</td><td>Week 10</td></tr>
+          <tr><td>2.5</td><td>Initialize Tauri desktop app (<code>koomon-desktop</code>) — scaffold IPC commands</td><td>Week 11</td></tr>
+          <tr><td>2.6</td><td>End-to-end integration test: 3 local nodes sync a text document in real time</td><td>Week 12</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Acceptance Criteria</h3>
+      <pre><code>GIVEN a koomon-server instance running on localhost:4433
+AND three Tauri desktop clients A, B, C connected to the same channel
+WHEN client A types a message
+THEN clients B and C MUST receive the CRDT update within 200ms on a LAN
+AND all three clients MUST show identical channel state
+AND disconnecting client B, sending a message from A, then reconnecting B
+MUST result in B receiving the missed update on reconnect</code></pre>
+
+      <h2>4. Phase 3 — Native Mobile Integration (Weeks 13–20)</h2>
+      <p><strong>Objective:</strong> Extend the Tauri application to iOS and Android. Implement platform-specific Swift and Kotlin plugins to wire APNs and FCM silent push notifications to the Rust core, enabling background sync on locked mobile devices.</p>
+
+      <h3>Milestones</h3>
+      <table>
+        <thead><tr><th>#</th><th>Milestone</th><th>Target Week</th></tr></thead>
+        <tbody>
+          <tr><td>3.1</td><td>Initialize Tauri Mobile — configure iOS and Android targets</td><td>Week 13</td></tr>
+          <tr><td>3.2</td><td>Implement <code>tauri-plugin-apns</code> (Swift) — APNs device registration, token exchange</td><td>Week 14</td></tr>
+          <tr><td>3.3</td><td>Implement <code>tauri-plugin-fcm</code> (Kotlin) — FCM registration, high-priority data message handler</td><td>Week 15</td></tr>
+          <tr><td>3.4</td><td>Implement server-side push trigger — emit APNs/FCM payload on inbound CRDT update</td><td>Week 16</td></tr>
+          <tr><td>3.5</td><td>Implement background Rust core wake on iOS — complete sync within 30s window</td><td>Weeks 17–18</td></tr>
+          <tr><td>3.6</td><td>Implement background Rust core wake on Android — <code>WorkManager</code> expedited task</td><td>Weeks 18–19</td></tr>
+          <tr><td>3.7</td><td>Implement local OS notification after background sync completes</td><td>Week 19</td></tr>
+          <tr><td>3.8</td><td>End-to-end mobile background test: send message → locked phone shows notification</td><td>Week 20</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Acceptance Criteria</h3>
+      <pre><code>GIVEN a mobile device (iOS or Android) with Koomon installed
+AND the device screen is locked (app in background / suspended)
+WHEN a peer sends a message to a shared channel
+THEN within 15 seconds the mobile device MUST display a local OS notification
+AND when the user unlocks the device and opens Koomon
+THEN the full message content MUST be present in local SQLite
+AND no message data MUST have been processed by any cloud service</code></pre>
+
+      <h2>5. Phase 4 — Open-Source Launch (Weeks 21–24)</h2>
+      <p><strong>Objective:</strong> Harden the repository for public consumption. Write complete user and operator documentation. Publish a production-ready <code>docker-compose.yml</code>. Launch publicly and seed the developer community.</p>
+
+      <h3>Milestones</h3>
+      <table>
+        <thead><tr><th>#</th><th>Milestone</th><th>Target Week</th></tr></thead>
+        <tbody>
+          <tr><td>4.1</td><td>Write <code>CONTRIBUTING.md</code> — branch strategy, PR template, DCO sign-off</td><td>Week 21</td></tr>
+          <tr><td>4.2</td><td>Write <code>docs/SELF_HOSTING.md</code> — full Docker deployment guide</td><td>Week 21</td></tr>
+          <tr><td>4.3</td><td>Write <code>docs/SECURITY.md</code> — responsible disclosure policy and security model</td><td>Week 21</td></tr>
+          <tr><td>4.4</td><td>Produce <code>docker-compose.yml</code> for single-command Community Core server deployment</td><td>Week 22</td></tr>
+          <tr><td>4.5</td><td>Set up GitHub Actions CI — <code>cargo test</code>, <code>cargo clippy</code>, Tauri desktop build matrix</td><td>Week 22</td></tr>
+          <tr><td>4.6</td><td>Tag <code>v0.1.0-alpha</code> release with pre-built binaries for macOS, Windows, Linux</td><td>Week 23</td></tr>
+          <tr><td>4.7</td><td>Launch: GitHub public, Hacker News "Show HN", Reddit r/selfhosted, r/rust</td><td>Week 24</td></tr>
+          <tr><td>4.8</td><td>Open Managed Cloud waitlist (landing page + email capture)</td><td>Week 24</td></tr>
+        </tbody>
+      </table>
+
+      <h2>6. Post-Launch Backlog</h2>
+      <p>These items are explicitly deferred past Week 24 to protect launch focus:</p>
+      <table>
+        <thead><tr><th>Item</th><th>Rationale for Deferral</th></tr></thead>
+        <tbody>
+          <tr><td>SwarmState AI on-device vector indexing</td><td>Requires Phase 1–3 corpus to index; drives Enterprise pipeline</td></tr>
+          <tr><td>Koomon Managed Cloud billing integration (Stripe)</td><td>Needs paying customers to validate pricing first</td></tr>
+          <tr><td>SSO / SCIM provisioning</td><td>Enterprise feature; gated on first Enterprise deal</td></tr>
+          <tr><td>End-to-end encryption key exchange UI</td><td>Core crypto is in place; UX polish deferred</td></tr>
+          <tr><td>Windows ARM64 build</td><td>Low market priority for initial launch</td></tr>
+          <tr><td>Multi-workspace federation</td><td>Complex protocol work; V2 roadmap item</td></tr>
+          <tr><td>Voice / video channels</td><td>Requires WebRTC layer; separate engineering initiative</td></tr>
+        </tbody>
+      </table>
+
+    </div>
+  </main>
+
+  <!-- ─── Footer ────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <a class="nav__logo" href="index.html">
+          <svg class="nav__logo-icon" viewBox="0 0 32 32" aria-hidden="true">
+            <circle cx="16" cy="16" r="14" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+            <path d="M10 20 L16 10 L22 20" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
+            <circle cx="16" cy="20" r="2.5" fill="var(--accent)"/>
+          </svg>
+          <span>Koomon</span>
+        </a>
+        <p>Local-first team messaging.<br/>Built with Rust. Owned by you.</p>
+      </div>
+      <nav class="footer__links" aria-label="Footer navigation">
+        <div class="footer__col">
+          <h4>Product</h4>
+          <ul role="list">
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#how-it-works">Architecture</a></li>
+            <li><a href="index.html#pricing">Pricing</a></li>
+            <li><a href="roadmap.html">Roadmap</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Resources</h4>
+          <ul role="list">
+            <li><a href="architecture.html">Docs</a></li>
+            <li><a href="contributing.html">Contributing</a></li>
+            <li><a href="https://github.com/koomon/koomon">GitHub</a></li>
+            <li><a href="license.html">License (AGPLv3)</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Company</h4>
+          <ul role="list">
+            <li><a href="business-model.html">Business Model</a></li>
+            <li><a href="mailto:enterprise@koomon.app">Enterprise</a></li>
+            <li><a href="mailto:hello@koomon.app">Contact</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+    <div class="footer__bottom">
+      <div class="container">
+        <p>© 2026 Koomon Inc. Community Core is <a href="license.html">AGPLv3</a>. Enterprise modules are proprietary.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

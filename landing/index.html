@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Koomon — A local-first, cross-platform team messenger built with Rust and Tauri. Own your data. Work offline. No cloud required." />
+  <title>Koomon — Local-First Team Messenger</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── Navigation ────────────────────────────────────────────────── -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav__inner container">
+      <a class="nav__logo" href="#">
+        <svg class="nav__logo-icon" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="16" cy="16" r="14" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+          <path d="M10 20 L16 10 L22 20" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
+          <circle cx="16" cy="20" r="2.5" fill="var(--accent)"/>
+        </svg>
+        <span>Koomon</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="https://github.com/koomon/koomon" class="nav__link--gh" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20" fill="currentColor">
+            <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+        </a></li>
+      </ul>
+      <a class="btn btn--accent btn--sm" href="#pricing">Get Started Free</a>
+    </div>
+  </nav>
+
+  <!-- ─── Hero ──────────────────────────────────────────────────────── -->
+  <header class="hero">
+    <div class="container hero__inner">
+      <div class="hero__badge">
+        <span class="badge">Open Source · AGPLv3</span>
+      </div>
+      <h1 class="hero__headline">
+        Team messaging<br/>
+        <span class="hero__headline--accent">without the cloud tax.</span>
+      </h1>
+      <p class="hero__sub">
+        Koomon is a local-first, end-to-end encrypted team messenger built on a unified Rust core.
+        Your messages live on your hardware — offline-first, always. No vendor. No lock-in.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--accent btn--lg" href="https://github.com/koomon/koomon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+            <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+          Self-Host Free
+        </a>
+        <a class="btn btn--outline btn--lg" href="#pricing">View Managed Cloud →</a>
+      </div>
+      <div class="hero__platforms" aria-label="Supported platforms">
+        <span class="platform-tag">macOS</span>
+        <span class="platform-tag">Windows</span>
+        <span class="platform-tag">Linux</span>
+        <span class="platform-tag">iOS</span>
+        <span class="platform-tag">Android</span>
+      </div>
+    </div>
+    <div class="hero__glow" aria-hidden="true"></div>
+  </header>
+
+  <!-- ─── Social Proof ──────────────────────────────────────────────── -->
+  <section class="proof">
+    <div class="container proof__inner">
+      <p class="proof__label">Designed for teams who care about sovereignty</p>
+      <div class="proof__logos" aria-label="Target segments">
+        <span>Privacy Teams</span>
+        <span class="proof__sep" aria-hidden="true">·</span>
+        <span>Engineering Orgs</span>
+        <span class="proof__sep" aria-hidden="true">·</span>
+        <span>Legal &amp; Compliance</span>
+        <span class="proof__sep" aria-hidden="true">·</span>
+        <span>Open-Source Communities</span>
+        <span class="proof__sep" aria-hidden="true">·</span>
+        <span>Regulated Industries</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Problem / Solution ────────────────────────────────────────── -->
+  <section class="compare section" aria-labelledby="compare-heading">
+    <div class="container">
+      <p class="section__eyebrow">Why Koomon</p>
+      <h2 class="section__heading" id="compare-heading">SaaS messengers own your data.<br/>You shouldn't have to accept that.</h2>
+      <div class="compare__grid">
+        <div class="compare__col compare__col--bad">
+          <div class="compare__col-header">The SaaS status quo</div>
+          <ul class="compare__list compare__list--bad" role="list">
+            <li>Messages live on vendor servers</li>
+            <li>No internet = no communication</li>
+            <li>AI search uploads your data to the cloud</li>
+            <li>Vendor lock-in, price hikes, EOL risk</li>
+            <li>Self-hosting requires heavy DevOps</li>
+          </ul>
+        </div>
+        <div class="compare__vs" aria-hidden="true">VS</div>
+        <div class="compare__col compare__col--good">
+          <div class="compare__col-header">Koomon</div>
+          <ul class="compare__list compare__list--good" role="list">
+            <li>All messages stored in local SQLite — you own the file</li>
+            <li>Offline-first CRDT syncs edits on reconnect</li>
+            <li>On-device vector RAG — AI that never leaves your machine</li>
+            <li>AGPLv3 core — fork it, audit it, run it forever</li>
+            <li><code>docker compose up</code> — single command self-hosting</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Features ─────────────────────────────────────────────────── -->
+  <section class="features section" id="features" aria-labelledby="features-heading">
+    <div class="container">
+      <p class="section__eyebrow">Core Capabilities</p>
+      <h2 class="section__heading" id="features-heading">Everything your team needs.<br/>Nothing you don't.</h2>
+      <div class="features__grid">
+
+        <article class="feature-card">
+          <div class="feature-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h3>End-to-End Encrypted</h3>
+          <p>NaCl-boxed CRDT envelopes. The relay server is a dumb pipe — it never sees your plaintext, period.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="5" rx="9" ry="3"/>
+              <path d="M21 12c0 1.66-4.03 3-9 3S3 13.66 3 12"/>
+              <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
+            </svg>
+          </div>
+          <h3>Local-First SQLite</h3>
+          <p>Every read and write hits local SQLite first. The network is a sync mechanism, never a requirement.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 18 22 12 16 6"/>
+              <polyline points="8 6 2 12 8 18"/>
+            </svg>
+          </div>
+          <h3>Unified Rust Core</h3>
+          <p>One <code>koomon-core</code> crate runs identically on macOS, Windows, Linux, iOS, and Android — zero code drift.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+              <line x1="12" y1="22.08" x2="12" y2="12"/>
+            </svg>
+          </div>
+          <h3>Y-CRDT Offline Sync</h3>
+          <p>Conflict-free replicated data types keep message history consistent across devices — even after days offline.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+          <h3>On-Device AI Search</h3>
+          <p>SwarmState AI indexes your message history locally. Semantic search across years of channels — zero cloud calls.</p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+              <line x1="12" y1="18" x2="12.01" y2="18"/>
+            </svg>
+          </div>
+          <h3>Native Mobile Push</h3>
+          <p>Silent APNs and FCM wakes the Rust core on demand. Background sync that works within iOS and Android lifecycle limits.</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── How It Works ─────────────────────────────────────────────── -->
+  <section class="arch section" id="how-it-works" aria-labelledby="arch-heading">
+    <div class="container">
+      <p class="section__eyebrow">Architecture</p>
+      <h2 class="section__heading" id="arch-heading">One Rust core. Five platforms.<br/>Zero cloud dependency.</h2>
+      <div class="arch__diagram" aria-label="Architecture diagram">
+        <div class="arch__layer arch__layer--ui">
+          <div class="arch__layer-label">UI Layer</div>
+          <div class="arch__layer-tech">React · TypeScript · Tauri v2</div>
+        </div>
+        <div class="arch__arrow" aria-hidden="true">
+          <span>Tauri IPC Bridge · FFI</span>
+        </div>
+        <div class="arch__layer arch__layer--core">
+          <div class="arch__layer-label">Cross-Platform Rust Core</div>
+          <div class="arch__layer-boxes">
+            <div class="arch__box">
+              <strong>Y-CRDT Engine</strong>
+              <span>yrs ≥ 0.21</span>
+            </div>
+            <div class="arch__box">
+              <strong>SQLite Storage</strong>
+              <span>rusqlite + SQLCipher</span>
+            </div>
+            <div class="arch__box">
+              <strong>WebTransport</strong>
+              <span>wtransport / QUIC</span>
+            </div>
+            <div class="arch__box">
+              <strong>Background Sync</strong>
+              <span>tokio async runtime</span>
+            </div>
+          </div>
+        </div>
+        <div class="arch__arrow" aria-hidden="true">
+          <span>Platform Adapters</span>
+        </div>
+        <div class="arch__platforms-row">
+          <div class="arch__platform">
+            <span class="arch__platform-icon" aria-hidden="true">🖥</span>
+            <strong>Desktop Daemon</strong>
+            <small>macOS · Windows · Linux</small>
+          </div>
+          <div class="arch__platform">
+            <span class="arch__platform-icon" aria-hidden="true">📱</span>
+            <strong>APNs Binding</strong>
+            <small>iOS · 30s lifecycle</small>
+          </div>
+          <div class="arch__platform">
+            <span class="arch__platform-icon" aria-hidden="true">🤖</span>
+            <strong>FCM Binding</strong>
+            <small>Android · transient service</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Pricing ───────────────────────────────────────────────────── -->
+  <section class="pricing section" id="pricing" aria-labelledby="pricing-heading">
+    <div class="container">
+      <p class="section__eyebrow">Pricing</p>
+      <h2 class="section__heading" id="pricing-heading">Start free. Scale when you're ready.</h2>
+      <p class="section__sub">The Community Core is complete and useful on its own. Paid tiers eliminate operational burden and add intelligence features — they don't paywall core functionality.</p>
+
+      <div class="pricing__grid">
+
+        <!-- Community -->
+        <div class="pricing-card">
+          <div class="pricing-card__tier">Community Core</div>
+          <div class="pricing-card__price">
+            <span class="pricing-card__amount">Free</span>
+            <span class="pricing-card__period">forever</span>
+          </div>
+          <div class="pricing-card__license">AGPLv3 Open Source</div>
+          <ul class="pricing-card__features" role="list">
+            <li>All 5 native platforms</li>
+            <li>Offline-first CRDT sync</li>
+            <li>End-to-end encryption</li>
+            <li>Self-hosted server</li>
+            <li>Mobile push (BYO certs)</li>
+            <li>Unlimited users &amp; messages</li>
+            <li>Single command deployment</li>
+          </ul>
+          <a class="btn btn--outline btn--full" href="https://github.com/koomon/koomon">Clone on GitHub</a>
+        </div>
+
+        <!-- Managed Cloud -->
+        <div class="pricing-card pricing-card--featured">
+          <div class="pricing-card__badge">Most Popular</div>
+          <div class="pricing-card__tier">Managed Cloud</div>
+          <div class="pricing-card__price">
+            <span class="pricing-card__amount">$8</span>
+            <span class="pricing-card__period">/ user / month</span>
+          </div>
+          <div class="pricing-card__license">From $29/mo · Starter plan available</div>
+          <ul class="pricing-card__features" role="list">
+            <li>Everything in Community</li>
+            <li>Managed infra + daily backups</li>
+            <li>99.9% uptime SLA</li>
+            <li>Auto TLS + TURN server</li>
+            <li>Admin web dashboard</li>
+            <li>90-day workspace audit log</li>
+            <li>48-hour business support</li>
+          </ul>
+          <a class="btn btn--accent btn--full" href="mailto:hello@koomon.app">Start Free Trial</a>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="pricing-card">
+          <div class="pricing-card__tier">Enterprise + SwarmState AI</div>
+          <div class="pricing-card__price">
+            <span class="pricing-card__amount">$12</span>
+            <span class="pricing-card__period">/ user / month</span>
+          </div>
+          <div class="pricing-card__license">Add-on · Annual · Requires Business plan</div>
+          <ul class="pricing-card__features" role="list">
+            <li>Everything in Managed Cloud</li>
+            <li>On-device vector RAG search</li>
+            <li>Zero-cloud AI — no data egress</li>
+            <li>SSO / SCIM provisioning</li>
+            <li>1-year compliance audit log</li>
+            <li>4-hour critical SLA</li>
+            <li>Named account manager</li>
+          </ul>
+          <a class="btn btn--outline btn--full" href="mailto:enterprise@koomon.app">Contact Sales</a>
+        </div>
+
+      </div>
+
+      <p class="pricing__note">Annual billing saves 20%. Custom pricing for 250+ seats. <a href="#pricing">See full feature matrix →</a></p>
+    </div>
+  </section>
+
+  <!-- ─── Final CTA ─────────────────────────────────────────────────── -->
+  <section class="cta section" aria-labelledby="cta-heading">
+    <div class="container cta__inner">
+      <div class="cta__glow" aria-hidden="true"></div>
+      <h2 class="cta__heading" id="cta-heading">Your data.<br/>Your infrastructure.<br/>Your rules.</h2>
+      <p class="cta__sub">Join teams who've taken back ownership of their communication stack.</p>
+      <div class="cta__actions">
+        <a class="btn btn--accent btn--lg" href="https://github.com/koomon/koomon">
+          Get Started Free
+        </a>
+        <a class="btn btn--ghost btn--lg" href="architecture.html">Read the Architecture →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Footer ────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <a class="nav__logo" href="#">
+          <svg class="nav__logo-icon" viewBox="0 0 32 32" aria-hidden="true">
+            <circle cx="16" cy="16" r="14" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+            <path d="M10 20 L16 10 L22 20" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
+            <circle cx="16" cy="20" r="2.5" fill="var(--accent)"/>
+          </svg>
+          <span>Koomon</span>
+        </a>
+        <p>Local-first team messaging.<br/>Built with Rust. Owned by you.</p>
+      </div>
+      <nav class="footer__links" aria-label="Footer navigation">
+        <div class="footer__col">
+          <h4>Product</h4>
+          <ul role="list">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how-it-works">Architecture</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="roadmap.html">Roadmap</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Resources</h4>
+          <ul role="list">
+            <li><a href="architecture.html">Docs</a></li>
+            <li><a href="https://github.com/koomon/koomon">GitHub</a></li>
+            <li><a href="license.html">License (AGPLv3)</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Company</h4>
+          <ul role="list">
+            <li><a href="business-model.html">Business Model</a></li>
+            <li><a href="mailto:enterprise@koomon.app">Enterprise</a></li>
+            <li><a href="mailto:hello@koomon.app">Contact</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+    <div class="footer__bottom">
+      <div class="container">
+        <p>© 2026 Koomon Inc. Community Core is <a href="../LICENSE">AGPLv3</a>. Enterprise modules are proprietary.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

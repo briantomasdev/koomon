@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Koomon System Architecture — cross-platform Rust core, Y-CRDT, SQLite, WebTransport, and mobile background lifecycle." />
+  <title>Architecture — Koomon</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── Navigation ────────────────────────────────────────────────── -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav__inner container">
+      <a class="nav__logo" href="index.html">
+        <svg class="nav__logo-icon" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="16" cy="16" r="14" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+          <path d="M10 20 L16 10 L22 20" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
+          <circle cx="16" cy="20" r="2.5" fill="var(--accent)"/>
+        </svg>
+        <span>Koomon</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a href="index.html#features">Features</a></li>
+        <li><a href="index.html#how-it-works">How It Works</a></li>
+        <li><a href="index.html#pricing">Pricing</a></li>
+        <li><a href="https://github.com/koomon/koomon" class="nav__link--gh" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20" fill="currentColor">
+            <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+        </a></li>
+      </ul>
+      <a class="btn btn--accent btn--sm" href="index.html#pricing">Get Started Free</a>
+    </div>
+  </nav>
+
+  <!-- ─── Content ───────────────────────────────────────────────────── -->
+  <main class="doc-page">
+    <a class="doc-nav-back" href="index.html">Back to Home</a>
+    <p class="doc-page__eyebrow">Docs</p>
+    <h1 class="doc-page__title">System Architecture</h1>
+
+    <div class="doc-body">
+
+      <p>This document is the authoritative technical specification for Koomon's cross-platform engineering core. It covers the component topology, platform adapters, inter-process communication contracts, and the mobile background lifecycle strategy.</p>
+
+      <h2>1. Design Philosophy</h2>
+      <p>Koomon's architecture is built around three non-negotiable constraints:</p>
+      <table>
+        <thead><tr><th>Constraint</th><th>Implication</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Local-first</strong></td><td>Every read/write hits a local SQLite database first. The network is a sync mechanism, not a requirement.</td></tr>
+          <tr><td><strong>Single engineer maintainable</strong></td><td>The UI layer and the sync logic are strictly decoupled. One Rust engineer can maintain core parity across all five platforms.</td></tr>
+          <tr><td><strong>Privacy by default</strong></td><td>End-to-end encryption is a property of the CRDT message envelope, not a bolt-on feature. The server is a relay, never an authority.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>2. High-Level Component Topology</h2>
+      <pre><code>+-------------------------------------------------------+
+|                  UI Presentation Layer                |
+|                (React / TypeScript SPA)               |
++-------------------------------------------------------+
+                           |
+             Tauri IPC Bridge / FFI Bindings
+                           |
++-------------------------------------------------------+
+|               Cross-Platform Rust Core                |
+|  +------------------+           +------------------+  |
+|  |  Y-CRDT Engine   |           |  WebTransport    |  |
+|  +------------------+           +------------------+  |
+|  |  SQLite Storage  |           |  Background Sync |  |
+|  +------------------+           +------------------+  |
++-------------------------------------------------------+
+     /                      |                      \
+[Desktop OS API]    [Apple APNs Binding]    [Google FCM Binding]
+(Persistent Daemon) (30s Native Lifecycle)  (Transient Service)</code></pre>
+
+      <h3>Layer Responsibilities</h3>
+      <table>
+        <thead><tr><th>Layer</th><th>Runtime</th><th>Responsibility</th></tr></thead>
+        <tbody>
+          <tr><td>React/TypeScript SPA</td><td>Host WebView</td><td>Render UI state, dispatch user intent</td></tr>
+          <tr><td>Tauri IPC Bridge</td><td>Native process boundary</td><td>Serialize/deserialize commands and events between WebView and Rust</td></tr>
+          <tr><td>Rust Core</td><td>Native binary</td><td>CRDT merge, local persistence, transport management</td></tr>
+          <tr><td>Platform Adapters</td><td>OS-specific</td><td>Lifecycle management, push notification bindings, daemon registration</td></tr>
+        </tbody>
+      </table>
+
+      <h2>3. Technical Component Specifications</h2>
+
+      <h3>3.1 Shared Rust Core</h3>
+      <p>The Rust core is compiled as a single Cargo workspace library (<code>koomon-core</code>) that is linked into every platform adapter. It has <strong>zero platform-specific code</strong>.</p>
+
+      <h4>State Synchronization — Y-CRDT</h4>
+      <ul>
+        <li>Crate: <code>yrs</code> ≥ 0.21 — the canonical Rust port of Y.js / Yjs</li>
+        <li>Document model: Each conversation thread is a <code>yrs::Doc</code> containing a <code>Text</code> or <code>Array</code> CRDT type.</li>
+        <li>Offline behavior: Local mutations apply immediately to the in-memory CRDT document. The resulting <code>Update</code> byte sequence is persisted to SQLite as a pending operation log entry.</li>
+        <li>Merge semantics: On reconnect, the client sends all pending <code>Update</code> vectors to the server, which fans them out to connected peers. The CRDT guarantees convergence regardless of update arrival order.</li>
+      </ul>
+
+      <h4>Local Persistence — SQLite via rusqlite</h4>
+      <ul>
+        <li>Crate: <code>rusqlite</code> ≥ 0.31 with the <code>bundled</code> + <code>sqlcipher</code> features (statically links SQLite + SQLCipher).</li>
+        <li>Schema strategy: One SQLite database file per Koomon workspace, stored in the OS-appropriate application data directory.</li>
+        <li><code>messages</code> — immutable append-only CRDT update log</li>
+        <li><code>channels</code> — channel metadata</li>
+        <li><code>peers</code> — known peer identities and their last-seen vector clocks</li>
+        <li><code>pending_sync</code> — outbound updates not yet acknowledged by the server relay</li>
+      </ul>
+
+      <h4>Network Communication — WebTransport / QUIC</h4>
+      <ul>
+        <li>Crate: <code>wtransport</code> ≥ 0.5</li>
+        <li>Protocol: HTTP/3 over QUIC (UDP). Each client opens a single <code>Session</code> to the relay, then multiplexes per-channel bidirectional <code>Stream</code> objects within that session.</li>
+        <li>Benefits over WebSocket: Head-of-line blocking elimination, native stream multiplexing, built-in TLS 1.3, lower latency on unreliable networks.</li>
+        <li>Firewall note: QUIC runs on UDP. Self-hosted deployments must open the configured UDP port (default <code>4433</code>). The <code>docker-compose.yml</code> handles this automatically.</li>
+      </ul>
+
+      <h3>3.2 Desktop Adapter (Tauri Desktop)</h3>
+      <p>Framework: Tauri v2. Targets: macOS (arm64 + x86_64), Windows (x86_64), Linux (x86_64, aarch64).</p>
+      <p>The Rust core runs as a persistent OS process registered with the host system tray. This gives Koomon always-on WebTransport, instant notification delivery, and a low resource footprint (~5–15 MB on disk — no Electron Chromium bundle).</p>
+
+      <h4>IPC Contract</h4>
+      <pre><code>invoke("send_message", { channelId, content })  →  ()
+invoke("get_channel_history", { channelId })     →  Message[]
+invoke("sync_state", {})                          →  SyncStatus
+listen("new_message", handler)                   →  UnlistenFn
+listen("peer_joined", handler)                   →  UnlistenFn</code></pre>
+
+      <h3>3.3 Mobile Adapter (Tauri Mobile)</h3>
+      <p>Framework: Tauri v2 Mobile. Targets: iOS (arm64), Android (arm64-v8a, armeabi-v7a, x86_64).</p>
+      <table>
+        <thead><tr><th>Plugin</th><th>Platform</th><th>Responsibility</th></tr></thead>
+        <tbody>
+          <tr><td><code>tauri-plugin-apns</code></td><td>iOS (Swift)</td><td>Register device token with APNs, receive silent push payloads, wake Rust core</td></tr>
+          <tr><td><code>tauri-plugin-fcm</code></td><td>Android (Kotlin)</td><td>Register FCM token, receive high-priority data-only FCM messages, wake Rust core</td></tr>
+          <tr><td><code>tauri-plugin-notifications</code></td><td>Both</td><td>Emit local OS notification after CRDT sync completes in background</td></tr>
+        </tbody>
+      </table>
+
+      <h2>4. Native Mobile Background Lifecycle</h2>
+      <p>Mobile operating systems aggressively terminate background processes. Koomon routes around this by converting server events into transient client executions triggered by silent push notifications.</p>
+      <pre><code>[Mobile Client (Background)]  [APNs / FCM]    [Koomon Server]   [Peer Client]
+         |                         |                  |                |
+         |                         |                  |&lt;--Sends Msg---&gt;|
+         |                         |&lt;--Trigger Push---|                |
+         |&lt;--Deliver Silent Push---|                  |                |
+ [Wakes Native Swift/Kotlin Plugin]                  |                |
+ [Initializes Rust Core Engine]                      |                |
+         |============Connect via WebTransport======&gt;|                |
+         |&lt;===========Sync Outbound/Inbound CRDTs====|                |
+ [Commits delta to Local SQLite]                     |                |
+ [Emits Local OS Notification]                       |                |
+ [Process Suspended by OS]</code></pre>
+
+      <h4>iOS Constraints (APNs)</h4>
+      <ul>
+        <li>Silent push (<code>content-available: 1</code>) grants approximately <strong>30 seconds</strong> of background CPU time.</li>
+        <li>The Rust core must complete WebTransport connect + CRDT sync + SQLite commit within this window.</li>
+        <li>Background App Refresh must be enabled by the user. Koomon's onboarding requests this permission explicitly.</li>
+      </ul>
+
+      <h4>Android Constraints (FCM)</h4>
+      <ul>
+        <li>High-priority FCM data messages wake a <code>FirebaseMessagingService</code> regardless of Doze mode.</li>
+        <li>The Kotlin plugin spawns a <code>WorkManager</code> task with the <code>EXPEDITED</code> flag to run the Rust core.</li>
+        <li>Koomon targets &lt; 5 seconds for user-perceived notification latency.</li>
+      </ul>
+
+      <h2>5. Data Layer</h2>
+      <h3>Local Storage Paths</h3>
+      <table>
+        <thead><tr><th>Platform</th><th>SQLite Path</th></tr></thead>
+        <tbody>
+          <tr><td>macOS</td><td><code>~/Library/Application Support/koomon/&lt;workspace-id&gt;.db</code></td></tr>
+          <tr><td>Windows</td><td><code>%APPDATA%\koomon\&lt;workspace-id&gt;.db</code></td></tr>
+          <tr><td>Linux</td><td><code>~/.local/share/koomon/&lt;workspace-id&gt;.db</code></td></tr>
+          <tr><td>iOS</td><td>App's Documents sandbox</td></tr>
+          <tr><td>Android</td><td>App's internal storage</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Encryption at Rest</h3>
+      <p>SQLite databases are encrypted using SQLCipher (via the <code>rusqlite</code> <code>sqlcipher</code> feature). The encryption key is derived from the user's device credential store (Keychain on macOS/iOS, DPAPI on Windows, Secret Service on Linux, Android Keystore on Android).</p>
+
+      <h2>6. Network Layer</h2>
+      <p>The Koomon server is a stateless QUIC relay. It authenticates peers via JWT issued at workspace join time, routes CRDT <code>Update</code> packets between members of the same channel, buffers undelivered updates for offline peers, and does <strong>not</strong> store message plaintext — only encrypted CRDT update blobs.</p>
+      <h3>Self-Hosted Deployment</h3>
+      <pre><code>services:
+  koomon-server:
+    image: ghcr.io/your-org/koomon-server:latest
+    ports:
+      - "4433:4433/udp"   # WebTransport / QUIC
+      - "8080:8080/tcp"   # HTTP admin API
+    volumes:
+      - koomon-data:/var/lib/koomon
+    environment:
+      - KOOMON_JWT_SECRET=${JWT_SECRET}
+      - KOOMON_BUFFER_TTL=7d</code></pre>
+
+      <h2>7. Security Model</h2>
+      <table>
+        <thead><tr><th>Property</th><th>Mechanism</th></tr></thead>
+        <tbody>
+          <tr><td>Transport security</td><td>TLS 1.3 (mandatory, enforced by QUIC)</td></tr>
+          <tr><td>Message confidentiality</td><td>End-to-end encrypted CRDT envelopes (NaCl box / X25519 + XSalsa20-Poly1305)</td></tr>
+          <tr><td>Authentication</td><td>Ed25519 device identity keys; JWT relay tokens</td></tr>
+          <tr><td>Server trust</td><td>Server sees ciphertext only; cannot read message content</td></tr>
+          <tr><td>Local data</td><td>SQLCipher AES-256 at rest, key in OS credential store</td></tr>
+        </tbody>
+      </table>
+
+      <h2>8. Dependency Registry</h2>
+      <table>
+        <thead><tr><th>Crate / Package</th><th>Version</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>yrs</code></td><td>≥ 0.21</td><td>Y-CRDT document engine</td></tr>
+          <tr><td><code>rusqlite</code></td><td>≥ 0.31 (bundled)</td><td>Embedded SQLite storage</td></tr>
+          <tr><td><code>wtransport</code></td><td>≥ 0.5</td><td>WebTransport / HTTP3 / QUIC client-server</td></tr>
+          <tr><td><code>tokio</code></td><td>≥ 1.37</td><td>Async runtime</td></tr>
+          <tr><td><code>serde</code> / <code>serde_json</code></td><td>≥ 1.0</td><td>Serialization</td></tr>
+          <tr><td><code>tauri</code></td><td>v2</td><td>Cross-platform app shell + IPC</td></tr>
+          <tr><td><code>react</code></td><td>≥ 18</td><td>UI framework</td></tr>
+          <tr><td><code>typescript</code></td><td>≥ 5.4</td><td>Type-safe frontend</td></tr>
+        </tbody>
+      </table>
+
+    </div>
+  </main>
+
+  <!-- ─── Footer ────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <a class="nav__logo" href="index.html">
+          <svg class="nav__logo-icon" viewBox="0 0 32 32" aria-hidden="true">
+            <circle cx="16" cy="16" r="14" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+            <path d="M10 20 L16 10 L22 20" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
+            <circle cx="16" cy="20" r="2.5" fill="var(--accent)"/>
+          </svg>
+          <span>Koomon</span>
+        </a>
+        <p>Local-first team messaging.<br/>Built with Rust. Owned by you.</p>
+      </div>
+      <nav class="footer__links" aria-label="Footer navigation">
+        <div class="footer__col">
+          <h4>Product</h4>
+          <ul role="list">
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#how-it-works">Architecture</a></li>
+            <li><a href="index.html#pricing">Pricing</a></li>
+            <li><a href="roadmap.html">Roadmap</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Resources</h4>
+          <ul role="list">
+            <li><a href="architecture.html">Docs</a></li>
+            <li><a href="contributing.html">Contributing</a></li>
+            <li><a href="https://github.com/koomon/koomon">GitHub</a></li>
+            <li><a href="license.html">License (AGPLv3)</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Company</h4>
+          <ul role="list">
+            <li><a href="business-model.html">Business Model</a></li>
+            <li><a href="mailto:enterprise@koomon.app">Enterprise</a></li>
+            <li><a href="mailto:hello@koomon.app">Contact</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+    <div class="footer__bottom">
+      <div class="container">
+        <p>© 2026 Koomon Inc. Community Core is <a href="license.html">AGPLv3</a>. Enterprise modules are proprietary.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

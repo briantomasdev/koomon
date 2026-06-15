@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Contributing to Koomon — spec-driven development loop, code standards, security rules, and pull request checklist." />
+  <title>Contributing — Koomon</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ─── Navigation ────────────────────────────────────────────────── -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav__inner container">
+      <a class="nav__logo" href="index.html">
+        <svg class="nav__logo-icon" viewBox="0 0 32 32" aria-hidden="true">
+          <circle cx="16" cy="16" r="14" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+          <path d="M10 20 L16 10 L22 20" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
+          <circle cx="16" cy="20" r="2.5" fill="var(--accent)"/>
+        </svg>
+        <span>Koomon</span>
+      </a>
+      <ul class="nav__links" role="list">
+        <li><a href="index.html#features">Features</a></li>
+        <li><a href="index.html#how-it-works">How It Works</a></li>
+        <li><a href="index.html#pricing">Pricing</a></li>
+        <li><a href="https://github.com/koomon/koomon" class="nav__link--gh" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20" fill="currentColor">
+            <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+        </a></li>
+      </ul>
+      <a class="btn btn--accent btn--sm" href="index.html#pricing">Get Started Free</a>
+    </div>
+  </nav>
+
+  <!-- ─── Content ───────────────────────────────────────────────────── -->
+  <main class="doc-page">
+    <a class="doc-nav-back" href="index.html">Back to Home</a>
+    <p class="doc-page__eyebrow">Docs</p>
+    <h1 class="doc-page__title">Contributing to Koomon</h1>
+
+    <div class="doc-body">
+
+      <p>Koomon's Community Core is licensed under <strong>AGPLv3</strong>. All contributions to <code>src/</code>, <code>server/</code>, and <code>mobile/</code> must remain under AGPLv3. The <code>enterprise/</code> directory is proprietary and not open for external contribution.</p>
+
+      <h2>Before You Start</h2>
+      <p>Read <a href="https://github.com/koomon/koomon/blob/main/CLAUDE.md">CLAUDE.md</a>. It is the project constitution — tech stack, architectural constraints, and code quality rules. Every AI assistant and every human contributor is expected to follow it.</p>
+
+      <h2>Workflow: Spec-Driven Development (SDD)</h2>
+      <p>Koomon uses a three-phase loop. <strong>Do not open a PR without going through all three phases.</strong></p>
+
+      <h3>Phase 1 — Write the Spec</h3>
+      <p>Before writing any code or tests, create <code>specs/&lt;feature-name&gt;.md</code> using <code>specs/_template.md</code> as the scaffold.</p>
+      <p>A spec must define:</p>
+      <ul>
+        <li>Data structures (Rust structs/enums + TypeScript payload types)</li>
+        <li>Function and command signatures with exact return types</li>
+        <li>SQL schema changes with migration file name</li>
+        <li>Business rules (each verifiable by a test)</li>
+        <li>Edge cases (scenario → expected behaviour)</li>
+        <li>Numbered acceptance criteria (<code>AC-NN</code>) that map 1-to-1 to future tests</li>
+      </ul>
+      <p>Open a PR or GitHub Discussion with the spec. <strong>Get it approved before writing code.</strong> This is the definition of done for Phase 1.</p>
+
+      <h3>Phase 2 — Red (Failing Tests)</h3>
+      <p>With an approved spec, write the tests for every <code>AC-NN</code> acceptance criterion. Tests must fail at this point — no implementation yet.</p>
+      <ul>
+        <li>Rust: <code>tests/&lt;module&gt;_test.rs</code> or <code>#[cfg(test)]</code> block</li>
+        <li>TypeScript: <code>*.test.ts</code> / <code>*.test.tsx</code> (always a separate file)</li>
+        <li>Test naming: <code>test_&lt;unit&gt;_&lt;scenario&gt;</code></li>
+      </ul>
+
+      <h3>Phase 3 — Green → Refactor</h3>
+      <p>Write the <strong>minimum</strong> implementation to make the tests pass. Then refactor for performance and clarity while keeping tests green.</p>
+
+      <h2>Code Standards (Summary)</h2>
+      <table>
+        <thead><tr><th>Rule</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>One concern per file</td><td>Logic, tests, styles, types, migrations — always separate files</td></tr>
+          <tr><td>No monolithic files</td><td>Split at ~150 lines by responsibility</td></tr>
+          <tr><td>Mandatory crates only</td><td><code>yrs</code>, <code>rusqlite</code> (bundled + sqlcipher), <code>wtransport</code>, <code>tokio</code>, <code>thiserror</code>/<code>anyhow</code>, <code>tauri</code> v2, <code>sodiumoxide</code></td></tr>
+          <tr><td>No forbidden substitutions</td><td>No <code>async-std</code>, <code>diesel</code>, <code>tungstenite</code>, Redux, Tailwind, etc.</td></tr>
+          <tr><td>Exported functions need doc comments</td><td><code>///</code> in Rust, <code>/** */</code> in TypeScript</td></tr>
+          <tr><td>Max 3 indentation levels</td><td>Extract to a named helper beyond that</td></tr>
+          <tr><td>No inline styles in React</td><td>Use <code>*.module.css</code> — never <code>style={{}}</code></td></tr>
+        </tbody>
+      </table>
+
+      <h2>Security Rules</h2>
+      <p>These are non-negotiable. PRs that violate them will not be merged.</p>
+      <ul>
+        <li>Never log plaintext message content, encryption keys, JWT tokens, or device identity keys.</li>
+        <li>SQLCipher key must come from the OS credential store — never from a raw user password.</li>
+        <li>All CRDT blobs must be NaCl-boxed <strong>before</strong> being written to <code>pending_sync</code>.</li>
+      </ul>
+
+      <h2>Pull Request Checklist</h2>
+      <p>Before opening a PR, confirm all of the following:</p>
+      <ul>
+        <li>A <code>specs/&lt;feature-name&gt;.md</code> exists and is Approved</li>
+        <li>Tests are in separate files and named <code>test_&lt;unit&gt;_&lt;scenario&gt;</code></li>
+        <li>All acceptance criteria (<code>AC-NN</code>) in the spec have a corresponding passing test</li>
+        <li>No new dependencies outside the approved crate/package list</li>
+        <li>No <code>println!</code> / <code>dbg!</code> in production code</li>
+        <li>No <code>TODO</code> / <code>FIXME</code> comments left in changed files</li>
+        <li>Exported functions have doc comments</li>
+        <li>SQL changes have a versioned migration file in <code>db/migrations/</code></li>
+      </ul>
+
+      <h2>Getting Help</h2>
+      <ul>
+        <li>Architecture questions → <a href="architecture.html">Architecture docs</a></li>
+        <li>Roadmap context → <a href="roadmap.html">Roadmap</a></li>
+        <li>Open an issue or discussion on <a href="https://github.com/koomon/koomon">GitHub</a></li>
+      </ul>
+
+    </div>
+  </main>
+
+  <!-- ─── Footer ────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <a class="nav__logo" href="index.html">
+          <svg class="nav__logo-icon" viewBox="0 0 32 32" aria-hidden="true">
+            <circle cx="16" cy="16" r="14" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+            <path d="M10 20 L16 10 L22 20" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>
+            <circle cx="16" cy="20" r="2.5" fill="var(--accent)"/>
+          </svg>
+          <span>Koomon</span>
+        </a>
+        <p>Local-first team messaging.<br/>Built with Rust. Owned by you.</p>
+      </div>
+      <nav class="footer__links" aria-label="Footer navigation">
+        <div class="footer__col">
+          <h4>Product</h4>
+          <ul role="list">
+            <li><a href="index.html#features">Features</a></li>
+            <li><a href="index.html#how-it-works">Architecture</a></li>
+            <li><a href="index.html#pricing">Pricing</a></li>
+            <li><a href="roadmap.html">Roadmap</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Resources</h4>
+          <ul role="list">
+            <li><a href="architecture.html">Docs</a></li>
+            <li><a href="contributing.html">Contributing</a></li>
+            <li><a href="https://github.com/koomon/koomon">GitHub</a></li>
+            <li><a href="license.html">License (AGPLv3)</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Company</h4>
+          <ul role="list">
+            <li><a href="business-model.html">Business Model</a></li>
+            <li><a href="mailto:enterprise@koomon.app">Enterprise</a></li>
+            <li><a href="mailto:hello@koomon.app">Contact</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+    <div class="footer__bottom">
+      <div class="container">
+        <p>© 2026 Koomon Inc. Community Core is <a href="license.html">AGPLv3</a>. Enterprise modules are proprietary.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
